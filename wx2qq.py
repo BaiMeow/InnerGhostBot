@@ -8,10 +8,10 @@ from itchat.content import TEXT, PICTURE, ATTACHMENT, RECORDING, SHARING
 @itchat.msg_register(
     [TEXT, PICTURE, ATTACHMENT, RECORDING, SHARING], isGroupChat=True)
 def text_handler(msg):
+    if msg.user.userName != group_id:
+        return
     name = msg.actualNickName,
     print("From:%s" % name)  # 打印收到的群消息的来源的识别码
-    if name != group_id:
-        return
     if msg.type == TEXT:
         net.SendtoQQ(msg.actualNickName, msg['Text'])
     elif msg.type == SHARING:
@@ -22,10 +22,10 @@ def text_handler(msg):
 
 @itchat.msg_register([PICTURE, ATTACHMENT], isGroupChat=True)
 def sharing_handler(msg):
-    name = msg.user.userName
-    print("From:%s" % name)  # 打印收到的群消息的来源的识别码
-    if name != group_id:
+    if msg.user.userName != group_id:
         return
+    name = msg.actualNickName,
+    print("From:%s" % name)  # 打印收到的群消息的来源的识别码
     path = "./files/"+msg.fileName
     msg.download(path)
     if msg.type == PICTURE:
